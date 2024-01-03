@@ -8,21 +8,21 @@ const headCount = async () => {
   return numberOfUsers;
 }
 
-// Aggregate function for getting the overall grade using $avg
-const grade = async (userId) =>
-  User.aggregate([
-    // only include the given user by using $match
-    { $match: { _id: new ObjectId(userId) } },
-    {
-      $unwind: '$assignments',
-    },
-    {
-      $group: {
-        _id: new ObjectId(userId),
-        overallGrade: { $avg: '$assignments.score' },
-      },
-    },
-  ]);
+// // Aggregate function for getting the overall grade using $avg
+// const grade = async (userId) =>
+//   User.aggregate([
+//     // only include the given user by using $match
+//     { $match: { _id: new ObjectId(userId) } },
+//     {
+//       $unwind: '$assignments',
+//     },
+//     {
+//       $group: {
+//         _id: new ObjectId(userId),
+//         overallGrade: { $avg: '$assignments.score' },
+//       },
+//     },
+//   ]);
 
 module.exports = {
   // Get all users
@@ -69,6 +69,24 @@ module.exports = {
       res.status(500).json(err);
     }
   },
+  // update a user
+  async updateUser(req, res) {
+    try {
+      const user = await User.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+      );
+
+      if (!user) {
+        res.status(404).json({ message: 'No user with this id!' });
+      }
+
+      res.json(user);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  },
   // Delete a user and remove them from the thought
   async deleteUser(req, res) {
     try {
@@ -97,15 +115,15 @@ module.exports = {
     }
   },
 
-  // Add an assignment to a user
-  async addAssignment(req, res) {
-    console.log('You are adding an assignment');
+  // Add an friend to a user
+  async addFriend(req, res) {
+    console.log('You are adding a friend');
     console.log(req.body);
 
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $addToSet: { assignments: req.body } },
+        { $addToSet: { friends: req.body } },
         { runValidators: true, new: true }
       );
 
@@ -120,12 +138,12 @@ module.exports = {
       res.status(500).json(err);
     }
   },
-  // Remove assignment from a user
-  async removeAssignment(req, res) {
+  // Remove friend from a user
+  async removeFriend(req, res) {
     try {
       const user = await User.findOneAndUpdate(
         { _id: req.params.userId },
-        { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
+        { $pull: { friends: { friendsId: req.params.friendsId } } },
         { runValidators: true, new: true }
       );
 
