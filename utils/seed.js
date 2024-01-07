@@ -18,18 +18,21 @@ connection.once('open', async () => {
     }
 
 
-  // Create empty array to hold the users
-  const users = [];
+  // Create empty array to hold the thoughts
+  const thoughts = [];
 
   // Loop 20 times -- add user to the user array
-  for (let i = 0; i < 20; i++) {
-    // Get some random thought objects using a helper function that we imported from ./data
-    ;
+  for (let i = 0; i < 10; i++) {
 
-    const username = getRandomName();
+    // get random thought text for the user to be added
+    const thoughtText= getRandomName();
+
+
+    // use username to make an email
     const email = `${username.toLowerCase()}@mail.com`;
+    // add users to the user's friends array
     const friends = [];
-    for (let i = 0; i < Math.floor(Math.random() * 43); i++) {
+    for (let i = 0; i < Math.floor(Math.random() * 10); i++) {
       newFriend = getRandomName();
       friends.push({newFriend});
     }
@@ -37,7 +40,32 @@ connection.once('open', async () => {
     users.push({
       username,
       email,
-      friends
+    });
+  }
+const thoughtText = getRandomThoughts();
+
+  // Create empty array to hold the users
+  const users = [];
+
+  // Loop 20 times -- add user to the user array
+  for (let i = 0; i < 10; i++) {
+
+    // get random username for the user to be added
+    const username = getRandomName();
+
+
+    // use username to make an email
+    const email = `${username.toLowerCase()}@mail.com`;
+    // add users to the user's friends array
+    const friends = [];
+    for (let i = 0; i < Math.floor(Math.random() * 10); i++) {
+      newFriend = getRandomName();
+      friends.push({newFriend});
+    }
+
+    users.push({
+      username,
+      email,
     });
   }
 
@@ -45,14 +73,19 @@ connection.once('open', async () => {
   // Add user to the collection and await the results
   await User.collection.insertMany(users);
 
+  await User.collection.insertOne({
+    friends: [...users],
+    thoughts: [...thoughts]
+  })
+
   // Add thoughts to the collection and await the results
-  await Thought.collection.insertOne({
+  await Thought.collection.insertMany({
     thoughtText: getRandomThoughts(),
     username: [...users],
   });
 
   // Log out the seed data to indicate what should appear in the database
-  console.table(user);
+  console.table(users);
   console.info('Seeding complete! 🌱');
   process.exit(0);
 });
