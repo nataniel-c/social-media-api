@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, Types, model } = require('mongoose');
 
 // Schema to create User model
 const userSchema = new Schema(
@@ -29,19 +29,18 @@ const userSchema = new Schema(
     ],
   },
   {
-    virtuals: {
-      friendCount: {
-        get() {return length(this.friends)},
-      }
-    }
-  },
-  {
     toJSON: {
-      getters: true,
-      virtuals: true
+      virtuals: true,
+      id: false
     },
   }  
 );
+
+userSchema
+  .virtual('friendCount')
+  .get(function () {
+    return `${this.friends.length}`;
+  });
 
 const User = model('user', userSchema);
 

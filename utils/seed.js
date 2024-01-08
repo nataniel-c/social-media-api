@@ -1,6 +1,6 @@
 const connection = require('../config/connection');
-const { Thought, User, Reaction } = require('../models');
-const { getRandomName, getRandomThoughts } = require('./data');
+const { Thought, User } = require('../models');
+const { getRandomName, getRandomThoughts, getRandomReaction, getRandomArrItem } = require('./data');
 
 connection.on('error', (err) => err);
 
@@ -12,79 +12,65 @@ connection.once('open', async () => {
       await connection.dropCollection('thoughts');
     }
 
-    let userCheck = await connection.db.listCollections({ name: 'user' }).toArray();
+    let userCheck = await connection.db.listCollections({ name: 'users' }).toArray();
     if (userCheck.length) {
-      await connection.dropCollection('user');
+      await connection.dropCollection('users');
     }
-
-
-  // Create empty array to hold the thoughts
-  const thoughts = [];
-
-  // Loop 20 times -- add user to the user array
-  for (let i = 0; i < 10; i++) {
-
-    // get random thought text for the user to be added
-    const thoughtText= getRandomName();
-
-
-    // use username to make an email
-    const email = `${username.toLowerCase()}@mail.com`;
-    // add users to the user's friends array
-    const friends = [];
-    for (let i = 0; i < Math.floor(Math.random() * 10); i++) {
-      newFriend = getRandomName();
-      friends.push({newFriend});
-    }
-
-    users.push({
-      username,
-      email,
-    });
-  }
-const thoughtText = getRandomThoughts();
 
   // Create empty array to hold the users
   const users = [];
+  
+  const thoughts = getRandomThoughts(10);
+  console.log(thoughts);
 
-  // Loop 20 times -- add user to the user array
-  for (let i = 0; i < 10; i++) {
+  //add thoughts to the collection and await the results
+  await Thought.collection.insertMany(thoughts);
 
-    // get random username for the user to be added
-    const username = getRandomName();
-
-
-    // use username to make an email
+  for (let i = 0; i < 10; i++) { 
+    
+    // get a random username and user username to make an email
+    const username = thoughts[i].username;
     const email = `${username.toLowerCase()}@mail.com`;
-    // add users to the user's friends array
-    const friends = [];
-    for (let i = 0; i < Math.floor(Math.random() * 10); i++) {
-      newFriend = getRandomName();
-      friends.push({newFriend});
-    }
-
+    
     users.push({
       username,
       email,
-    });
+    })
   }
 
+// add users to the collection and await the results
+await User.collection.insertMany(users);
 
-  // Add user to the collection and await the results
-  await User.collection.insertMany(users);
+for (const user of users) {
+  const randomFriend = getRandomArrItem(users)._id;
+  const randomThought = getRandomArrItem(thoughts)._id;
+  await User.collection.updateOne(
+    { _id: user._id },
+    {
+      $set: {
+        friends: [randomFriend],
+        thoughts: [randomThought]
+      }
+    }
+  );
+}
 
-  await User.collection.insertOne({
-    friends: [...users],
-    thoughts: [...thoughts]
-  })
 
-  // Add thoughts to the collection and await the results
-  await Thought.collection.insertMany({
-    thoughtText: getRandomThoughts(),
-    username: [...users],
-  });
+// for (let i = 0; i <5; i++) {
+//     //console.log(thoughts);
+//     console.log(users)
+//     const randomUser = getRandomArrItem(users)
+//     const randomFriend = getRandomArrItem(users)
+//     console.log(randomFriend._id)
+//     await User.collection.findOneAndUpdate(
+//       { _id: randomUser._id },
+//       { friends: JSON.stringify(randomFriend._id) }
+//     )
+// }
 
   // Log out the seed data to indicate what should appear in the database
+  console.log();
+  //console.log(users);
   console.table(users);
   console.info('Seeding complete! 🌱');
   process.exit(0);

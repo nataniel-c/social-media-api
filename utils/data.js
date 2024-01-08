@@ -1,23 +1,13 @@
 const usernames = [
   'ByYourLogic',
-  'aarez',
   'laserboat999',
   'aaron123',
-  'aaron-James',
-  'aarron1924760',
   'BladeeCity',
   'Angelmamii5',
-  'aayan3251',
   'pr0spector88',
-  'abaan1784566',
   'AbbaFan24',
   'ItsmindofJson',
-  'abdalroof23132',
-  'abdihakim',
   'UnkleDell',
-  'abdisalam222',
-  'abdul53781',
-  'abdul-aziz351',
   'Pilgrim',
   'agentsmith',
   'coollastname',
@@ -26,16 +16,12 @@ const usernames = [
   'zechariah',
   'bog_chaser',
   'IGN',
-  'zen',
-  'zendel',
-  'zenith',
   'jon_bois',
   'zeph',
   'ZeroSuitCamus',
-  'zhong',
+  'Justin_Whang',
   'lolt64',
   'poisonjr',
-  'zohair',
   'Neytiri',
 ];
 
@@ -86,18 +72,34 @@ const getRandomArrItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
 
 // Gets a random username
 const getRandomName = () =>
-  `${getRandomArrItem(usernames)}`;
+  getRandomArrItem(usernames);
 
   // Function to generate random thoughts that we can add to user object.
-const getRandomThoughts = () =>
-  `${getRandomArrItem(randomThoughts)}`;
-
+const getRandomThoughts = (int) => {
+  let results = [];
+  for (let i = 0; i < int; i++) {
+    results.push({
+      thoughtText: getRandomArrItem(randomThoughts),
+      username: getRandomName() + Math.floor(Math.random() * 100),
+      reactions: [...getRandomReaction(2)],
+    });
+  }
+  return results;
+};
 // Function to generate random reactions that we can add to thought object.
-const getRandomReaction = () =>
-  `${getRandomArrItem(randomReactions)}`;
-
-
-
+const getRandomReaction = (int) => {
+  if (int === 1) {
+    return getRandomArrItem(randomReactions);
+  }
+  let results = [];
+  for (let i = 0; i < int; i++) {
+    results.push({
+      reactionBody: getRandomArrItem(randomReactions),
+      username: getRandomName(),
+    });
+  }
+  return results;
+};
 
 // Export the functions for use in seed.js
-module.exports = { getRandomName, getRandomThoughts , getRandomReaction };
+module.exports = { getRandomName, getRandomThoughts, getRandomReaction, getRandomArrItem};
