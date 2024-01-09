@@ -1,4 +1,5 @@
 const { Schema, Types } = require('mongoose');
+const thoughtController = require('../controllers/thoughtController');
 
 const reactionSchema = new Schema(
   {
@@ -17,17 +18,15 @@ const reactionSchema = new Schema(
     },
     createdAt: {
       type: Date,
-      default: Date.now,
-      get: (date) => timeSince(date),
+      default: Date.now
     }
   },
   {
     toJSON: {
       getters: true,
     },
-  },
-  { 
-    timestamps: true,
+    id: false,
+    timestamps: true
   }
 );
 

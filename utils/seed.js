@@ -41,35 +41,23 @@ connection.once('open', async () => {
 // add users to the collection and await the results
 await User.collection.insertMany(users);
 
+// update each user to have a random thought and friend associated with it
 for (const user of users) {
-  const randomFriend = getRandomArrItem(users)._id;
-  const randomThought = getRandomArrItem(thoughts)._id;
+  const randomFriend = getRandomArrItem(users);
+  const randomThought = getRandomArrItem(thoughts);
   await User.collection.updateOne(
     { _id: user._id },
     {
       $set: {
-        friends: [randomFriend],
-        thoughts: [randomThought]
+        friends: [randomFriend._id],
+        thoughts: [randomThought._id]
       }
     }
   );
 }
 
-
-// for (let i = 0; i <5; i++) {
-//     //console.log(thoughts);
-//     console.log(users)
-//     const randomUser = getRandomArrItem(users)
-//     const randomFriend = getRandomArrItem(users)
-//     console.log(randomFriend._id)
-//     await User.collection.findOneAndUpdate(
-//       { _id: randomUser._id },
-//       { friends: JSON.stringify(randomFriend._id) }
-//     )
-// }
-
   // Log out the seed data to indicate what should appear in the database
-  console.log();
+  console.log(users);
   //console.log(users);
   console.table(users);
   console.info('Seeding complete! 🌱');

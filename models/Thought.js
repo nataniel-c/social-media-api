@@ -12,7 +12,6 @@ const thoughtsSchema = new Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: (date) => timeSince(date),
     },
     username: {
       type: String,
@@ -23,8 +22,8 @@ const thoughtsSchema = new Schema(
   {
     toJSON: {
       virtuals: true,
-      id: false
     },
+    id: false,
     timestamps: true
   }
 );

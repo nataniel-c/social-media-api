@@ -38,8 +38,9 @@ const randomThoughts = [
   'Note to self: dont wear red at a rodeo',
   'Scary hours.',
   'and the most crackers in my soup',
-  'Why do bash "dead-beat" dads for not being there for their kids but we never question if the child has bad vibes?',
+  'Why do bash dead-beat dads for not being there for their kids but we never question if the child has bad vibes?',
   'Firefox >>> google chrome',
+  'BREAKING NEWS: US Government releases evidence confirming existence of UFOs',
   'I hate when GIRLS die',
   'I wish Chun Li was real',
   'Listening to Mozart. #yupisaidit',
@@ -65,6 +66,7 @@ const randomReactions = [
   'This post keeps me up at night',
   'Top 10 posts on this site',
   'Please miss just once',
+  'Ratio'
 ];
 
 // Get a random item given an array
